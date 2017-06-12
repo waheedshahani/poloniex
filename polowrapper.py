@@ -9,7 +9,7 @@ def createTimeStamp(datestr, format="%Y-%m-%d %H:%M:%S"):
 
 class poloniex:
     def __init__(self):
-        self.APIKey = 'Z5NTPV0E-R3D6APWPIEN7'
+        self.APIKey = 'Z5NTPV0E-R3D6APFX-BOAQVGHW-27WPIEN7'
         self.Secret = 'secret key will be provided later'
 
     def post_process(self, before):
@@ -25,8 +25,21 @@ class poloniex:
                             
         return after
 
-    def api_query(self, command, req={}):
+#start time = start time of needed chart data
+#end time=end time of needed chart data
+#candle= interval of each candle? like 300 seconds, 900 seconds
+#pairlist is list of all pairs for which data is needed.
+    def returnChartData(self,parameters):
+	print parameters['starttime'],parameters['endtime'],parameters['candle']
+	pairlist=parameters['pairlist']
+	for pair in pairlist:
+		print pair
+		command='https://poloniex.com/public?command=returnChartData&currencyPair='+pair+'&start='+parameters['starttime']+'&end='+parameters['endtime']+'&period='+parameters['candle']
+		ret = urllib2.urlopen(urllib2.Request(command))
+		print json.loads(ret.read())
+		time.sleep(2)
 
+    def api_query(self, command, req={}):
         if(command == "returnTicker" or command == "return24Volume"):
             ret = urllib2.urlopen(urllib2.Request('https://poloniex.com/public?command=' + command))
             return json.loads(ret.read())
